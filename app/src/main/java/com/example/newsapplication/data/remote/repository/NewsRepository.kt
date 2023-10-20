@@ -15,7 +15,6 @@ class NewsRepository @Inject constructor(
     private val service: ApiService,
 ) {
 
-    @OptIn(ExperimentalPagingApi::class)
     fun getSearchResultStream(
         query: String?
     ): Flow<PagingData<ArticleEntity>> {

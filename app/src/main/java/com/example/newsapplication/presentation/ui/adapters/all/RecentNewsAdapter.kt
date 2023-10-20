@@ -12,6 +12,7 @@ import com.example.newsapplication.R
 import com.example.newsapplication.databinding.RcvRecentNewsBinding
 import com.example.newsapplication.domain.model.Article
 import com.example.newsapplication.presentation.ui.adapters.difUtil.RecentNewsDiffCallback
+import com.example.newsapplication.utils.Utility
 
 class RecentNewsAdapter(private val context: Context) : PagingDataAdapter<Article, RecentNewsViewHolder>(
     RecentNewsDiffCallback()
@@ -25,12 +26,9 @@ class RecentNewsAdapter(private val context: Context) : PagingDataAdapter<Articl
     override fun onBindViewHolder(holder: RecentNewsViewHolder, position: Int) {
         with(holder){
             binding.txtTitleRecent.text = getItem(position)?.title
-            binding.description.text = getItem(position)?.description
-            val requestOptions = RequestOptions()
-                .transform(CircleCrop())
+            binding.description.text = getItem(position)?.publishedAt?.let { Utility.formatDate(it) }
             Glide.with(context)
                 .load(getItem(position)?.urlToImage)
-                .apply(requestOptions)
                 .into(binding.imgDetails)
         }
     }

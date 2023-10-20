@@ -17,32 +17,16 @@ import javax.inject.Inject
 @HiltViewModel
 class NewsViewModel @Inject constructor(
     private val topHeadLinesUseCase: TopHeadlinesUseCase,
-    private val state: SavedStateHandle
 ) : ViewModel() {
-
     init {
-        getTopHeadlines()
-    }
-    private fun getTopHeadlines() {
         topHeadlinesFlow()
     }
-        private val loadingFlow: Flow<PagingData<Article>> =
-            flowOf(PagingData.empty())
-
-        private fun topHeadlinesFlow(): Flow<PagingData<Article>> =
-            topHeadLinesUseCase(null)
-                .cachedIn(viewModelScope).map {
-                    it.map { data ->
-                        data.toArticle()
-                    }
-                }
-
-        val combinedFlow: Flow<PagingData<Article>> = flow {
-            emit(loadingFlow.first())
-            topHeadlinesFlow().collect { topHeadlinesData ->
-               emit(topHeadlinesData)
+    var isLoading = true
+    fun topHeadlinesFlow(): Flow<PagingData<Article>> =
+        topHeadLinesUseCase(null).cachedIn(viewModelScope).map {
+            it.map { data ->
+                data.toArticle()
             }
         }
-
-    }
+}
 

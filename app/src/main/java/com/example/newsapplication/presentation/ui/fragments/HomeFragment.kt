@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -38,8 +39,8 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -50,29 +51,31 @@ class HomeFragment : Fragment() {
         initView()
     }
 
-    private fun initView(){
+    private fun initView() {
+        if (newsViewModel.isLoading) {
+            Toast.makeText(activity,"Loading...",Toast.LENGTH_LONG).show()
+        }
+        binding.etSearchNews.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSearchFragment())
+        }
         setUpAdapter()
         getData()
 
     }
 
-
-
-
     @SuppressLint("UnsafeRepeatOnLifecycleDetector")
-    private fun getData(){
-
-        lifecycleScope.launch{
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                newsViewModel.combinedFlow.collectLatest{
-
-                        recentNewsAdapter.submitData(it)
-                    }
+    private fun getData() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                newsViewModel.topHeadlinesFlow().collectLatest {
+                    newsViewModel.isLoading = false
+                    recentNewsAdapter.submitData(it)
+                }
             }
         }
     }
 
-    private fun setUpAdapter(){
+    private fun setUpAdapter() {
         recentNewsAdapter = RecentNewsAdapter(requireContext())
         binding.recentNewsRcv.apply {
             adapter = recentNewsAdapter
