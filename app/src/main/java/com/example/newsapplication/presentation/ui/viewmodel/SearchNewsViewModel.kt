@@ -32,12 +32,17 @@ class SearchNewsViewModel @Inject constructor(
             .cachedIn(viewModelScope).map {
                 it.map { data ->
                     data.toArticle()
-                }}
+                }
+            }
     }
+
     fun searchNews(query: String) {
-        state["query"] = query
-        currentQuery.value = state.getLiveData("query", "latest").value.toString()
+        if (query != "") {
+            state["query"] = query
+            currentQuery.value = state.getLiveData("query", "latest").value.toString()
+        }
     }
+
     override fun onCleared() {
         state["query"] = null
         super.onCleared()

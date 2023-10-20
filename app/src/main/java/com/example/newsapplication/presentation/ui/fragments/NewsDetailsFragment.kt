@@ -5,12 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.example.newsapplication.databinding.FragmentNewsDetailsBinding
 
 class NewsDetailsFragment : Fragment() {
 
     private var _binding: FragmentNewsDetailsBinding? = null
     private val binding get() = _binding!!
+    val args: NewsDetailsFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -18,6 +21,14 @@ class NewsDetailsFragment : Fragment() {
     ): View {
         _binding = FragmentNewsDetailsBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.txtArticle.text = args.recentArticle.description
+        Glide.with(requireActivity())
+            .load(args.recentArticle.urlToImage)
+            .into(binding.imgNews)
     }
 
     override fun onDestroyView() {

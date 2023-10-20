@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.example.newsapplication.databinding.FragmentSearchBinding
 import com.example.newsapplication.presentation.ui.adapters.all.RecentNewsAdapter
 import com.example.newsapplication.presentation.ui.viewmodel.SearchNewsViewModel
@@ -62,10 +63,10 @@ class SearchFragment : Fragment() {
     }
 
     private fun setUpRecyclerView(){
-        searchNewsAdapter = RecentNewsAdapter(requireContext())
-        binding.rcvSearch.apply {
-            adapter = searchNewsAdapter
-        }
+        searchNewsAdapter =  RecentNewsAdapter(requireContext(),RecentNewsAdapter.OnNewsItemClickListener{ article->
+            val action = HomeFragmentDirections.actionHomeFragmentToNewsDetailsFragment(article)
+            findNavController().navigate(action)
+        })
     }
     @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     private fun getData(){

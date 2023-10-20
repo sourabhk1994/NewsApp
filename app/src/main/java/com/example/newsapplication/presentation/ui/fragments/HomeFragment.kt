@@ -76,7 +76,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun setUpAdapter() {
-        recentNewsAdapter = RecentNewsAdapter(requireContext())
+        recentNewsAdapter = RecentNewsAdapter(requireContext(),RecentNewsAdapter.OnNewsItemClickListener{ article->
+            val action = HomeFragmentDirections.actionHomeFragmentToNewsDetailsFragment(article)
+            findNavController().navigate(action)
+        })
         binding.recentNewsRcv.apply {
             adapter = recentNewsAdapter
         }
